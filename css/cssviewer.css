@@ -30,6 +30,8 @@ input{
 	font-size:12px !important;
 	background : transparent !important;
 	border-color: transparent !important;
+	margin: 0px !important;
+
 }
 
 input:active{

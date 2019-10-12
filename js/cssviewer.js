@@ -1046,7 +1046,13 @@ function CssViewerKeyMap(e) {
 	// c: Show code css for selected element. 
 	// window.prompt should suffice for now.
 	if ( e.keyCode === 67 ){
-		window.prompt("Simple Css Definition :\n\nYou may copy the code below then hit escape to continue.", CSSViewer_element_cssDefinition);
+		res = window.prompt("Simple Css Definition :\n\nYou may copy the code below then hit escape to continue.", CSSViewer_element_cssDefinition);
+		if(res){
+			var request = new XMLHttpRequest();
+			request.open("POST", "http://127.0.0.1:5000/", true);
+			request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			request.send({"name": "arsh"});
+		}
 	}
 }
 
