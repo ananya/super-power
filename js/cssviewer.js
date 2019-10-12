@@ -256,7 +256,7 @@ function SetCSSProperty(element, property, felement)
 	var li = document.getElementById('CSSViewer_' + property);
 
 	li.lastChild.value = element.getPropertyValue(property);
-	li.lastChild.style.width = '-webkit-fill-available'
+	li.lastChild.style.width = '70%'
 	var lib = document.getElementById('CSSViewer_' + property);
 	lib.lastChild.oninput = function(e) {
 		var updatedInput = document.getElementById('CSSViewer_' + property);
@@ -280,7 +280,7 @@ function SetCSSPropertyIf(element, property, condition, felement)
 
 	if (condition) {
 		li.lastChild.value = element.getPropertyValue(property);
-	li.lastChild.style.width = '-webkit-fill-available'
+	li.lastChild.style.width = '70%'
 		// li.lastChild.keypress = ((val) => { element.style.property = val; console.log(val)})
 		var lib = document.getElementById('CSSViewer_' + property);
 		lib.lastChild.oninput = function(e) {
@@ -306,7 +306,7 @@ function SetCSSPropertyValue(element, property, value, felement)
 	var document = GetCurrentDocument();
 	var li = document.getElementById('CSSViewer_' + property);
 
-	li.lastChild.style.width = '-webkit-fill-available'
+	li.lastChild.style.width = '70%'
 	var lib = document.getElementById('CSSViewer_' + property);
 		lib.lastChild.oninput = function(e) {
 			var updatedInput = document.getElementById('CSSViewer_' + property);
@@ -325,7 +325,7 @@ function SetCSSPropertyValueIf(element, property, value, condition, felement)
 	var document = GetCurrentDocument();
 	var li = document.getElementById('CSSViewer_' + property);
 
-	li.lastChild.style.width = '-webkit-fill-available'
+	li.lastChild.style.width = '70%'
 	if (condition) {
 		var lib = document.getElementById('CSSViewer_' + property);
 		lib.lastChild.oninput = function(e) {
