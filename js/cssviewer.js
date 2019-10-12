@@ -1,5 +1,3 @@
-
-
 var CSSViewer_element
 
 var CSSViewer_element_cssDefinition
@@ -165,9 +163,28 @@ var CSSViewer_hexa = new Array(
 	'F'
 );
 
+var changeLogObject = {}
+
 /*
 ** Utils
 */
+
+function getPathTo(element) {
+    if (element.id!=='')
+        return 'id("'+element.id+'")';
+    if (element===document.body)
+        return element.tagName;
+
+    var ix= 0;
+    var siblings= element.parentNode.childNodes;
+    for (var i= 0; i<siblings.length; i++) {
+        var sibling= siblings[i];
+        if (sibling===element)
+            return getPathTo(element.parentNode)+'/'+element.tagName+'['+(ix+1)+']';
+        if (sibling.nodeType===1 && sibling.tagName===element.tagName)
+            ix++;
+    }
+}
 
 function GetCurrentDocument()
 {
@@ -261,15 +278,9 @@ function SetCSSProperty(element, property, felement)
 		var updatedInput = document.getElementById('CSSViewer_' + property);
 		var k = camelize(property).replace("-", "");
 		felement.style[k] = updatedInput.lastChild.value;
-		// felement.style.color = 'green';
-		// console.log(felement, k);
-		
+		var XPath = getPathTo(felement);
+		changeLogObject[XPath] = felement.style;
 	};
-	// console.log(lib.lastChild)
-	// .keypress(function() {
-	// 	console.log(this.value);
-		
-	// });
 }
 
 function SetCSSPropertyIf(element, property, condition, felement)
@@ -279,17 +290,14 @@ function SetCSSPropertyIf(element, property, condition, felement)
 
 	if (condition) {
 		li.lastChild.value = element.getPropertyValue(property);
-		// li.lastChild.keypress = ((val) => { element.style.property = val; console.log(val)})
 		var lib = document.getElementById('CSSViewer_' + property);
 		lib.lastChild.oninput = function(e) {
 			var updatedInput = document.getElementById('CSSViewer_' + property);
 			var k = camelize(property).replace("-", "");
 			felement.style[k] = updatedInput.lastChild.value;
-			// felement.style.color = 'green';
-			// console.log(felement, k);
-			
+			var XPath = getPathTo(felement);
+			changeLogObject[XPath] = felement.style;
 			};
-		// console.log(lib.lastChild)
 		lib.style.display = 'block';
 		return 1;
 	}
@@ -309,11 +317,9 @@ function SetCSSPropertyValue(element, property, value, felement)
 			var updatedInput = document.getElementById('CSSViewer_' + property);
 			var k = camelize(property).replace("-", "");
 			felement.style[k] = updatedInput.lastChild.value;
-			// felement.style.color = 'green';
-			// console.log(felement, k);
-			
+			var XPath = getPathTo(felement);
+			changeLogObject[XPath] = felement.style;
 			};
-		// console.log(lib.lastChild)
 	lib.style.display = 'block';
 }
 
@@ -328,11 +334,9 @@ function SetCSSPropertyValueIf(element, property, value, condition, felement)
 			var updatedInput = document.getElementById('CSSViewer_' + property);
 			var k = camelize(property).replace("-", "");
 			felement.style[k] = updatedInput.lastChild.value;
-			// felement.style.color = 'green';
-			// console.log(felement, k);
-			
+			var XPath = getPathTo(felement);
+			changeLogObject[XPath] = felement.style;
 			};
-		// console.log(lib.lastChild)
 		lib.style.display = 'block';
 
 		return 1;
@@ -634,8 +638,6 @@ function CSSViewerMouseOver(e)
 		CSSViewer_element_cssDefinition += "\t" + CSSViewer_pEffect[i] + ': ' + element.getPropertyValue( CSSViewer_pEffect[i] ) + ";\n";
 
 	CSSViewer_element_cssDefinition += "}";
-
-	// console.log( element.cssText ); //< debug the hovered el css
 }
 
 function CSSViewerMouseOut(e)
@@ -702,6 +704,20 @@ function CSSViewerIsElementInViewport(el) {
     );
 }
 
+
+function httpPost()
+{
+    var xmlHttp = new XMLHttpRequest();
+	xmlHttp.open( "POST", "http://localhost:5000/addCommit", true ); // false for synchronous request
+	xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlHttp.send(JSON.stringify({
+		pageUrl: document.location.href,
+		changeLog: JSON.stringify(changeLogObject)
+	}));
+    return xmlHttp.responseText;
+}
+
+
 /*
 * CSSViewer Class
 */
@@ -710,6 +726,19 @@ function CSSViewer()
 	// Create a block to display informations
 	this.CreateBlock = function() {
 		var document = GetCurrentDocument();
+		var commitButton = document.createElement('button');
+		commitButton.textContent = "Make Commit"
+		commitButton.onclick = ()=> {
+			console.log("got inside commit!");
+			
+			httpPost();
+			changeLogObject = {};
+		};
+		commitButton.style.position = "fixed";
+		commitButton.style.bottom= 0;
+		commitButton.style.right = 0;
+		commitButton.style.zIndex = 099999;
+		document.lastChild.appendChild(commitButton);
 		var block;
 		
 		if (document) {
@@ -1049,7 +1078,7 @@ function CssViewerKeyMap(e) {
 		res = window.prompt("Simple Css Definition :\n\nYou may copy the code below then hit escape to continue.", CSSViewer_element_cssDefinition);
 		if(res){
 			var request = new XMLHttpRequest();
-			request.open("POST", "http://127.0.0.1:5000/", true);
+			request.open("POST", "http://127.0.0.1:5000/addNote", true);
 			request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 			request.send({"name": "arsh"});
 		}
