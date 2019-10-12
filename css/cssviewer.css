@@ -34,6 +34,10 @@ input{
 
 }
 
+#colorid {
+	width: 7% !important;
+}
+
 input:active{
 	border-color: transparent !important;
 	box-shadow: transparent !important;

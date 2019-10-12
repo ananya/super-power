@@ -262,15 +262,8 @@ function SetCSSProperty(element, property, felement)
 		var updatedInput = document.getElementById('CSSViewer_' + property);
 		var k = camelize(property).replace("-", "");
 		felement.style[k] = updatedInput.lastChild.value;
-		// felement.style.color = 'green';
-		// console.log(felement, k);
 		
 	};
-	// console.log(lib.lastChild)
-	// .keypress(function() {
-	// 	console.log(this.value);
-		
-	// });
 }
 
 function SetCSSPropertyIf(element, property, condition, felement)
@@ -287,11 +280,8 @@ function SetCSSPropertyIf(element, property, condition, felement)
 			var updatedInput = document.getElementById('CSSViewer_' + property);
 			var k = camelize(property).replace("-", "");
 			felement.style[k] = updatedInput.lastChild.value;
-			// felement.style.color = 'green';
-			// console.log(felement, k);
 			
 			};
-		// console.log(lib.lastChild)
 		lib.style.display = 'block';
 		return 1;
 	}
@@ -303,7 +293,7 @@ function SetCSSPropertyIf(element, property, condition, felement)
 
 function SetCSSPropertyValue(element, property, value, felement)
 {
-	console.log(felement);
+	// console.log(felement);
 	
 	var document = GetCurrentDocument();
 	var li = document.getElementById('CSSViewer_' + property);
@@ -311,22 +301,20 @@ function SetCSSPropertyValue(element, property, value, felement)
 	li.lastChild.value = element.getPropertyValue(property);
 	li.lastChild.style.width = '70%'
 	var lib = document.getElementById('CSSViewer_' + property);
-	console.log(lib)
+	// console.log(lib)
 		lib.lastChild.oninput = function(e) {
 			var updatedInput = document.getElementById('CSSViewer_' + property);
-			console.log(updatedInput);
+			// console.log(updatedInput);
 			
 			var k = camelize(property).replace("-", "");
 			felement.style[k] = updatedInput.lastChild.value;
-			console.log( updatedInput.lastChild.value);
+			// console.log( updatedInput.lastChild.value);
 			
-			// felement.style.color = 'green';
-			// console.log(felement, k);
 			
 			};
-		// console.log(lib.lastChild)
 	lib.style.display = 'block';
 }
+
 
 function SetCSSPropertyValueIf(element, property, value, condition, felement)
 {
@@ -341,11 +329,8 @@ function SetCSSPropertyValueIf(element, property, value, condition, felement)
 			var updatedInput = document.getElementById('CSSViewer_' + property);
 			var k = camelize(property).replace("-", "");
 			felement.style[k] = updatedInput.lastChild.value;
-			// felement.style.color = 'green';
-			// console.log(felement, k);
 			
 			};
-		// console.log(lib.lastChild)
 		lib.style.display = 'block';
 
 		return 1;
@@ -767,11 +752,11 @@ function CSSViewer()
 					
 					var spanValue = document.createElement('input');					
 					if(properties[i]==='color' || properties[i]==='background-color'){
-						spanValue.type = 'color'
+						spanValue.type = 'color';
+						spanValue.id = 'colorid';
 					}
 
 					spanName.appendChild(document.createTextNode(properties[i]));
-					// console.log(properties[i])
 					li.appendChild(spanName);
 					li.appendChild(spanValue);
 					ul.appendChild(li);
