@@ -231,7 +231,7 @@ function RGBToHex(str)
 	}
 	
 	hexStr = '<span style="border: 1px solid #000000 !important;width: 8px !important;height: 8px !important;display: inline-block !important;background-color:'+ hexStr +' !important;"></span> ' + hexStr;
-
+	
 	return hexStr;
 }
 
@@ -273,6 +273,7 @@ function SetCSSProperty(element, property, felement)
 	var li = document.getElementById('CSSViewer_' + property);
 
 	li.lastChild.value = element.getPropertyValue(property);
+	li.lastChild.style.width = '70%'
 	var lib = document.getElementById('CSSViewer_' + property);
 	lib.lastChild.oninput = function(e) {
 		var updatedInput = document.getElementById('CSSViewer_' + property);
@@ -290,6 +291,8 @@ function SetCSSPropertyIf(element, property, condition, felement)
 
 	if (condition) {
 		li.lastChild.value = element.getPropertyValue(property);
+	li.lastChild.style.width = '70%'
+		// li.lastChild.keypress = ((val) => { element.style.property = val; console.log(val)})
 		var lib = document.getElementById('CSSViewer_' + property);
 		lib.lastChild.oninput = function(e) {
 			var updatedInput = document.getElementById('CSSViewer_' + property);
@@ -309,12 +312,19 @@ function SetCSSPropertyIf(element, property, condition, felement)
 
 function SetCSSPropertyValue(element, property, value, felement)
 {
+	// console.log(felement);
+	
 	var document = GetCurrentDocument();
 	var li = document.getElementById('CSSViewer_' + property);
-
+	
+	li.lastChild.value = element.getPropertyValue(property);
+	li.lastChild.style.width = '70%'
 	var lib = document.getElementById('CSSViewer_' + property);
+	// console.log(lib)
 		lib.lastChild.oninput = function(e) {
 			var updatedInput = document.getElementById('CSSViewer_' + property);
+			// console.log(updatedInput);
+			
 			var k = camelize(property).replace("-", "");
 			felement.style[k] = updatedInput.lastChild.value;
 			var XPath = getPathTo(felement);
@@ -323,11 +333,14 @@ function SetCSSPropertyValue(element, property, value, felement)
 	lib.style.display = 'block';
 }
 
+
 function SetCSSPropertyValueIf(element, property, value, condition, felement)
 {
 	var document = GetCurrentDocument();
 	var li = document.getElementById('CSSViewer_' + property);
+	li.lastChild.value = element.getPropertyValue(property);
 
+	li.lastChild.style.width = '70%'
 	if (condition) {
 		var lib = document.getElementById('CSSViewer_' + property);
 		lib.lastChild.oninput = function(e) {
@@ -397,9 +410,11 @@ function UpdatefontText(element, felement)
 
 function UpdateColorBg(element, felement)
 {
+	// console.log(GetCSSProperty(element, 'color'))
 	// Color
-	SetCSSPropertyValue(element, 'color', RGBToHex(GetCSSProperty(element, 'color')));
-
+	SetCSSPropertyValue(element, 'color', RGBToHex(GetCSSProperty(element, 'color')), felement);
+	
+	// console.log(GetCSSProperty(element, 'background-color') )
 	// Background
 	SetCSSPropertyValueIf(element, 'background-color', RGBToHex(GetCSSProperty(element, 'background-color')), GetCSSProperty(element, 'background-color') != 'transparent', felement);
 	SetCSSPropertyIf(element, 'background-attachment', GetCSSProperty(element, 'background-attachment') != 'scroll', felement);
@@ -778,9 +793,12 @@ function CSSViewer()
 					var spanName = document.createElement('span');
 
 					spanName.className = 'CSSViewer_property';
-
-					var spanValue = document.createElement('input');					
 					
+					var spanValue = document.createElement('input');					
+					if(properties[i]==='color' || properties[i]==='background-color'){
+						spanValue.type = 'color';
+						spanValue.id = 'colorid';
+					}
 
 					spanName.appendChild(document.createTextNode(properties[i]));
 					li.appendChild(spanName);
@@ -1100,3 +1118,5 @@ else{
 
 // Set event handler for the CssViewer 
 document.onkeydown = CssViewerKeyMap;
+
+
