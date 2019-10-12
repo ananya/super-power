@@ -18,89 +18,113 @@ span.CSSViewer_property,
 	margin:0 !important;
 	text-indent:0px !important;
 	text-align:left !important;
-	background:transparent !important;
+	background:rgb(30,32,44,1) !important;
 	visibility: visible !important;
 	width:auto !important;
 	height:auto !important;
 	line-height: 20px; 
+	border-radius: 15px !important;
+}
+input{
+	color:#bd93f9;
+	font-size:12px !important;
+	background : transparent !important;
+	border-color: transparent !important;
 }
 
+input:active{
+	border-color: transparent !important;
+	box-shadow: transparent !important;
+}
+input:focus{
+	border-color: transparent !important;
+	box-shadow: transparent !important;
+}
 #CSSViewer_block
 {
 	display:none;
-	min-width:332px !important;
+	min-width:350px !important;
+	max-width: 350px !important;
 	font-size:10px !important;
-	color:#555 !important;
+	color:#61cbe0 !important;
 	position:absolute !important;
+	border-radius: 15px !important;
+	box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 16px 0px, rgba(0, 0, 0, 0.24) 0px 8px 16px 0px;
 }
 
 #CSSViewer_block h1
 {
-	color:#fff !important;
-	font-size:12px !important;
+	color:#4adc71 !important;
+	font-size:15px !important;
 	text-transform:none !important;
 	text-align:center !important;
-	width:322px !important;
+	/* width:322px !important; */
 	display:block !important; 
-	background:url("chrome-extension://__MSG_@@extension_id__/img/header.png") !important;
-	padding:30px 10px 5px 10px !important;
+	padding:8px 4px 5px 4px !important;
 	margin:5% auto;
 	line-height: 10px;
+	border-radius: 15px !important;
 }
 
 #CSSViewer_center
 {
-	background-color:#f06292 important;
-	padding:10px 32px 0 32px !important;
+	padding:4px 8px 0 8px !important;
 	overflow:hidden !important;
-	background:url("chrome-extension://__MSG_@@extension_id__/img/body.png") repeat-y !important;
+	
+	/* background:url("chrome-extension://__MSG_@@extension_id__/img/body.png") repeat-y !important; */
 }
 
 #CSSViewer_footer
 {
-	padding-top:5px;
-	color:#555 !important;
+	padding-top:10px;
+	color:#4adc71 !important;
 	text-align:center !important;
-	width:332px !important;
+	/* width:332px !important; */
 	height:30px !important;
 	display:block !important;
-	background:url("chrome-extension://__MSG_@@extension_id__/img/footer.png") !important;
+	border-radius: 15px !important;
+	/* background:url("chrome-extension://__MSG_@@extension_id__/img/footer.png") !important; */
 }
 
 .CSSViewer_category
 {
-	background:url("chrome-extension://__MSG_@@extension_id__/img/list.png") no-repeat top left !important;
+	/* background:url("chrome-extension://__MSG_@@extension_id__/img/list.png") no-repeat top left !important; */
 	padding:0 5px !important;
 }
 
-#CSSViewer_block h2
+/* #CSSViewer_block h2
 {
 	padding-top:6px !important;
 	color:#6a8e46 !important;
 	font-size:12px !important;
 	text-align:left !important;
 	letter-spacing:-0.5px !important;
-}
+	border-radius: 15px !important;
+} */
 
 #CSSViewer_block ul
 {
-	padding:5px 5px 10px 5px !important;
+	padding:2px 2px 2px 2px !important;
 	list-style:none !important;
-	width:282px !important;
+	/* width:282px !important; */
+	border-radius: 15px !important;
+	font-size:12px;
 }
 
 #CSSViewer_block li
 {
-	background:url("chrome-extension://__MSG_@@extension_id__/img/bullet.png") no-repeat left center !important;
-	padding-left:10px !important; 
+	/* background:url("chrome-extension://__MSG_@@extension_id__/img/bullet.png") no-repeat left center !important; */
+	padding-left:4px !important; 
+	border-radius: 15px !important;
 }
 
 
 #CSSViewer_block span.CSSViewer_property
 {
-	color:#888 !important;
+	/* background:rgb(30,32,44,0.95) !important; */
 	float:left !important;
-	width:100px !important; 
+	/* width:70px !important;  */
 	display:block !important; 
 	overflow:hidden !important;
+	border-radius: 15px !important;
 }

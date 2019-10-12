@@ -685,7 +685,7 @@ function CSSViewerMouseMove(e)
 	inView = CSSViewerIsElementInViewport(block);
 
 	if( ! inView )
-		block.style.top = ( window.pageYOffset  + 20 ) + 'px';
+		block.style.top = ( window.pageYOffset  + 100 ) + 'px';
 
 	e.stopPropagation();
 }
@@ -734,9 +734,9 @@ function CSSViewer()
 				div.id = 'CSSViewer_' + cat;
 				div.className = 'CSSViewer_category';
 
-				var h2 = document.createElement('h2');
+				// var h2 = document.createElement('h2');
 
-				h2.appendChild(document.createTextNode(CSSViewer_categoriesTitle[cat]));
+				// h2.appendChild(document.createTextNode(CSSViewer_categoriesTitle[cat]));
 
 				var ul = document.createElement('ul');
 				var properties = CSSViewer_categories[cat];
@@ -751,7 +751,6 @@ function CSSViewer()
 					spanName.className = 'CSSViewer_property';
 
 					var spanValue = document.createElement('input');					
-					spanValue.value = 565;
 					
 
 					spanName.appendChild(document.createTextNode(properties[i]));
@@ -760,7 +759,7 @@ function CSSViewer()
 					ul.appendChild(li);
 				}
 
-				div.appendChild(h2);
+				// div.appendChild(h2);
 				div.appendChild(ul);
 				center.appendChild(div);
 			}
@@ -772,12 +771,12 @@ function CSSViewer()
 
 			footer.id = 'CSSViewer_footer';
 
-			//< 
-			footer.appendChild( document.createTextNode('CSSViewer 1.7. keys: [f] Un/Freeze. [c] Css. [Esc] Close.') ); 
+			//
+			footer.appendChild( document.createTextNode(' Keys: [f] Un/Freeze. [c] Export Css. [Esc] Close.') ); 
 			block.appendChild(footer);
 		}
 		
-		cssViewerInsertMessage( "CSSViewer loaded! Hover any element you want to inspect in the page." );
+		cssViewerInsertMessage( "Hover any element you want to inspect in the page!" );
 
 		return block;
 	}
