@@ -568,6 +568,7 @@ function UpdateHtml(felement) {
 		// console.log(li.innerHTML);
 		
 		li.style.width = '94%'
+		
 		// var lib = document.getElementById('');
 		li.oninput = function (e) {
 			var updatedInput = document.getElementById('spanHtmlId');
