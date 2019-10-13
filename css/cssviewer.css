@@ -36,6 +36,8 @@ input{
 
 }
 
+
+
 #colorid {
 	width: 7% !important;
 }
@@ -60,13 +62,28 @@ input:focus{
 	box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 16px 0px, rgba(0, 0, 0, 0.24) 0px 8px 16px 0px;
 }
 
+#CSSViewer_commitblock
+{
+	display:none;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	min-width: 350px !important;
+	max-width: 350px !important;
+	font-size:10px !important;
+	color:#61cbe0 !important;
+	position:absolute !important;
+	border-radius: 15px !important;
+	box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 16px 0px, rgba(0, 0, 0, 0.24) 0px 8px 16px 0px;
+	background:rgb(30,32,44,1) !important;
+}
+
 #CommitViewer_block
 {
 	min-width: 350px !important;
 	max-width: 550px !important;
 	font-size:10px !important;
 	color:#61cbe0 !important;
-	position:absolute !important;
+	position:absolute center !important;
 	border-radius: 15px !important;
 	box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 16px 0px, rgba(0, 0, 0, 0.24) 0px 8px 16px 0px;
 }

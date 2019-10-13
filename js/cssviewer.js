@@ -171,7 +171,7 @@ var changeLogObject = {}
 
 function getPathTo(element) {
 	if (element.id !== '')
-		return 'id("' + element.id + '")';
+		return "id('" + element.id + "')";
 	if (element === document.body)
 		return element.tagName;
 
@@ -632,6 +632,23 @@ function CSSViewerMouseOver(e) {
 	CSSViewer_element_cssDefinition += "}";
 }
 
+function CSSViewerMouseOverCommit(e) {
+	// Block
+	var document = GetCurrentDocument();
+	var block = document.getElementById('CSSViewer_commitblock');
+
+	if (!block) {
+		return;
+	}
+
+	CSSViewer_element = this;
+
+	cssViewerRemoveElement("cssViewerInsertMessage");
+
+	e.stopPropagation();
+}
+
+
 function CSSViewerMouseOut(e) {
 	this.style.outline = '';
 
@@ -682,6 +699,51 @@ function CSSViewerMouseMove(e) {
 	e.stopPropagation();
 }
 
+function CSSViewerMouseMoveCommit(e) {
+	var document = GetCurrentDocument();
+	var block = document.getElementById('CSSViewer_commitblock');
+
+	if (!block) {
+		return;
+	}
+
+	block.style.display = 'block';
+
+	var pageWidth = window.innerWidth;
+	var pageHeight = window.innerHeight;
+	var blockWidth = 332;
+	var blockHeight = document.defaultView.getComputedStyle(block, null).getPropertyValue('height');
+
+	blockHeight = blockHeight.substr(0, blockHeight.length - 2) * 1;
+
+	if ((e.pageX + blockWidth) > pageWidth) {
+		if ((e.pageX - blockWidth - 10) > 0)
+			block.style.left = e.pageX - blockWidth - 40 + 'px';
+		else
+			block.style.left = 0 + 'px';
+	}
+	else
+		block.style.left = (e.pageX + 20) + 'px';
+
+	if ((e.pageY + blockHeight) > pageHeight) {
+		if ((e.pageY - blockHeight - 10) > 0)
+			block.style.top = e.pageY - blockHeight - 20 + 'px';
+		else
+			block.style.top = 0 + 'px';
+	}
+	else
+		block.style.top = (e.pageY + 20) + 'px';
+
+	// adapt block top to screen offset
+	inView = CSSViewerIsElementInViewport(block);
+
+	if (!inView)
+		block.style.top = (window.pageYOffset + 100) + 'px';
+
+	e.stopPropagation();
+}
+
+
 // http://stackoverflow.com/a/7557433
 function CSSViewerIsElementInViewport(el) {
 	var rect = el.getBoundingClientRect();
@@ -697,7 +759,7 @@ function CSSViewerIsElementInViewport(el) {
 
 var xmlHttp = new XMLHttpRequest();
 function httpPost() {
-	xmlHttp.open("POST", "https://calm-cliffs-91609.herokuapp.com/addCommit", true); // false for synchronous request
+	xmlHttp.open("POST", "http://localhost:5000/addCommit", true); // false for synchronous request
 	xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	xmlHttp.send(JSON.stringify({
 		pageUrl: document.location.href,
@@ -707,7 +769,7 @@ function httpPost() {
 }
 
 function fetchCommitList() {
-	xmlHttp.open("POST", "https://calm-cliffs-91609.herokuapp.com/fetchCommits", true); // false for synchronous request
+	xmlHttp.open("POST", "http://localhost:5000/fetchCommits", true); // false for synchronous request
 	xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	xmlHttp.send(JSON.stringify({
 		pageUrl: document.location.href,
@@ -742,76 +804,12 @@ function CSSViewer() {
 			// Create a div block
 			block = document.createElement('div');
 			block.id = 'CSSViewer_block';
-
-			var commitblock = document.createElement('div');
-			commitblock.id = 'CommitViewer_block';
-			commitblock.style.display = 'hidden';
-
-			var toggleButton = document.createElement('button');
-			toggleButton.innerText = 'Toggle Commit Screen'
-			toggleButton.onclick = () => {
-				if (block.style.display === 'block') {
-					block.style.display = 'hidden';
-					commitblock.style.display = 'block';
-				} else {
-					block.style.display = 'block';
-					commitblock.style.display = 'hidden';
-				}
-			}
-
-			fetchCommitList();
-			xmlHttp.onreadystatechange = function () {
-				if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-
-					var commitList = JSON.parse(xmlHttp.response).data.url_commit_log;		
-					
-					console.log(commitList);
-					
-
-					for (let index = 0; index < commitList.length; index++) {
-
-						var commitListContainer = document.createElement('div');
-						commitListContainer.id = "commitListContainer";
-
-						var pathName = Object.entries(JSON.parse(commitList[index].commitByCommit.commit_log))[0][0];
-						var pathstyle = Object.entries(JSON.parse(commitList[index].commitByCommit.commit_log))[0][1];
-
-						console.log(getElementByXpath(pathName), pathstyle);
-						
-
-						var element = document.createElement('p');
-						element.id = "commit_number";
-
-						element.innerText = "Commit " + JSON.stringify(index);
-
-						var ApplyCommitButton = document.createElement('button');
-						ApplyCommitButton.id = "apply_button"
-						ApplyCommitButton.innerText = 'Apply Commit'
-
-						ApplyCommitButton.onclick = () => {
-
-							Object.keys(getElementByXpath(pathName).style).forEach(property => {
-								getElementByXpath(pathName).style[property] = pathstyle[property];
-							});
-
-						}
-
-						commitListContainer.appendChild(element);
-
-						commitListContainer.appendChild(ApplyCommitButton);
-
-						commitblock.appendChild(commitListContainer);
-
-					}
-				}
-			}
 			// block.appendChild(commitblock);
 			// Insert a title for CSS selector
 			var header = document.createElement('h1');
 
 			header.appendChild(document.createTextNode(''));
 			block.appendChild(header);
-			block.appendChild(commitblock);
 
 			// Insert all properties
 			var center = document.createElement('div');
@@ -865,7 +863,7 @@ function CSSViewer() {
 			footer.id = 'CSSViewer_footer';
 
 			//
-			footer.appendChild(document.createTextNode(' Keys: [f] Un/Freeze. [c] Export Css. [Esc] Close.'));
+			footer.appendChild(document.createTextNode(' Keys: [f] Un/Freeze. [c] Export Css. [Esc] Close [k]See Commits.'));
 			block.appendChild(footer);
 		}
 
@@ -874,6 +872,53 @@ function CSSViewer() {
 		return block;
 	}
 
+	this.createCommitBlock = function(){
+		var document = GetCurrentDocument();
+		var commitblock;
+		if(document){
+			commitblock = document.createElement('div');
+			commitblock.id = 'CSSViewer_commitblock';
+
+			fetchCommitList();
+			xmlHttp.onreadystatechange = function () {
+				if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+
+					var commitList = JSON.parse(xmlHttp.response).data.url_commit_log;		
+					for (let index = 0; index < commitList.length; index++) {
+
+						if(Object.entries(JSON.parse(commitList[index].commitByCommit.commit_log))[0] != null){
+							var commitListContainer = document.createElement('div');
+							commitListContainer.id = "commitListContainer";
+
+							var pathName = Object.entries(JSON.parse(commitList[index].commitByCommit.commit_log))[0][0];
+							var pathstyle = Object.entries(JSON.parse(commitList[index].commitByCommit.commit_log))[0][1];						
+
+							var ApplyCommitButton = document.createElement('button');
+							ApplyCommitButton.id = "apply_button"
+							ApplyCommitButton.innerText = "Commit "+ (index+1);
+
+							ApplyCommitButton.onclick = () => {
+
+								Object.keys(getElementByXpath(pathName).style).forEach(property => {
+									getElementByXpath(pathName).style[property] = pathstyle[property];
+								});
+
+							}
+
+							commitListContainer.appendChild(ApplyCommitButton);
+
+							commitblock.appendChild(commitListContainer);
+						}
+
+					}
+				}
+				
+			}
+
+			
+		}
+		return commitblock;
+	}
 	// Get all elements within the given element
 	this.GetAllElements = function (element) {
 		var elements = new Array();
@@ -898,6 +943,8 @@ function CSSViewer() {
 
 	// Add bool for knowing all elements having event listeners or not
 	this.haveEventListeners = false;
+	this.haveEventListenersCommit = false;
+	
 
 	// Add event listeners for all elements in the current document
 	this.AddEventListeners = function () {
@@ -912,6 +959,18 @@ function CSSViewer() {
 		this.haveEventListeners = true;
 	}
 
+	this.AddEventListenersCommit = function () {
+		var document = GetCurrentDocument();
+		var elements = this.GetAllElements(document.body);
+
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].addEventListener("mouseover", CSSViewerMouseOverCommit, false);
+			elements[i].addEventListener("mouseout", CSSViewerMouseOut, false);
+			elements[i].addEventListener("mousemove", CSSViewerMouseMoveCommit, false);
+		}
+		this.haveEventListenersCommit = true;
+	}
+	
 	// Remove event listeners for all elements in the current document
 	this.RemoveEventListeners = function () {
 		var document = GetCurrentDocument();
@@ -924,7 +983,17 @@ function CSSViewer() {
 		}
 		this.haveEventListeners = false;
 	}
+	this.RemoveEventListenersCommit = function () {
+		var document = GetCurrentDocument();
+		var elements = this.GetAllElements(document.body);
 
+		for (var i = 0; i < elements.length; i++) {
+			elements[i].removeEventListener("mouseover", CSSViewerMouseOverCommit, false);
+			elements[i].removeEventListener("mouseout", CSSViewerMouseOut, false);
+			elements[i].removeEventListener("mousemove", CSSViewerMouseMoveCommit, false);
+		}
+		this.haveEventListenersCommit = false;
+	}
 	// Set the title of the block
 	this.SetTitle = function () { }
 
@@ -976,6 +1045,15 @@ CSSViewer.prototype.IsEnabled = function () {
 	return false;
 }
 
+CSSViewer.prototype.IsEnabledCommit = function () {
+	var document = GetCurrentDocument();
+
+	if (document.getElementById('CSSViewer_commitblock')) {
+		return true;
+	}
+
+	return false;
+}
 /*
 * Enable CSSViewer
 */
@@ -988,6 +1066,21 @@ CSSViewer.prototype.Enable = function () {
 		document.body.appendChild(block);
 		this.AddEventListeners();
 
+		return true;
+	}
+
+	return false;
+}
+
+CSSViewer.prototype.EnableCommit = function () {
+	var document = GetCurrentDocument();
+	console.log("Enable commit block")
+	var block = document.getElementById('CSSViewer_commitblock');
+
+	if (!block) {
+		block = this.createCommitBlock();
+		document.body.appendChild(block);
+		this.AddEventListenersCommit();
 		return true;
 	}
 
@@ -1011,6 +1104,20 @@ CSSViewer.prototype.Disable = function () {
 	return false;
 }
 
+CSSViewer.prototype.DisableCommit = function () {
+	var document = GetCurrentDocument();
+	var block = document.getElementById('CSSViewer_commitblock');
+
+	if (block) {
+		document.body.removeChild(block);
+		this.RemoveEventListenersCommit();
+
+		return true;
+	}
+
+	return false;
+}
+
 /*
 * Freeze CSSViewer
 */
@@ -1019,6 +1126,17 @@ CSSViewer.prototype.Freeze = function () {
 	var block = document.getElementById('CSSViewer_block');
 	if (block && this.haveEventListeners) {
 		this.RemoveEventListeners();
+
+		return true;
+	}
+
+	return false;
+}
+CSSViewer.prototype.FreezeCommit = function () {
+	var document = GetCurrentDocument();
+	var block = document.getElementById('CSSViewer_commitblock');
+	if (block && this.haveEventListenersCommit) {
+		this.RemoveEventListenersCommit();
 
 		return true;
 	}
@@ -1036,6 +1154,20 @@ CSSViewer.prototype.Unfreeze = function () {
 		// Remove the red outline
 		CSSViewer_current_element.style.outline = '';
 		this.AddEventListeners();
+
+		return true;
+	}
+
+	return false;
+}
+
+CSSViewer.prototype.UnfreezeCommit = function () {
+	var document = GetCurrentDocument();
+	var block = document.getElementById('CSSViewer_commitblock');
+	if (block && !this.haveEventListenersCommit) {
+		// Remove the red outline
+		CSSViewer_current_element.style.outline = '';
+		this.AddEventListenersCommit();
 
 		return true;
 	}
@@ -1099,8 +1231,6 @@ function cssViewerCopyCssToConsole(type) {
 *  Freeze css viewer on clicking 'f' key
 */
 function CssViewerKeyMap(e) {
-	if (!cssViewer.IsEnabled())
-		return;
 
 	// ESC: Close the css viewer if the cssViewer is enabled.
 	if (e.keyCode === 27) {
@@ -1115,22 +1245,34 @@ function CssViewerKeyMap(e) {
 	// f: Freeze or Unfreeze the css viewer if the cssViewer is enabled
 	if (e.keyCode === 70) {
 		if (cssViewer.haveEventListeners) {
-			cssViewer.Freeze();
+			if(cssViewer.IsEnabled()) cssViewer.Freeze();
 		}
-		else {
+		else if(!cssViewer.haveEventListeners){
 			cssViewer.Unfreeze();
 		}
+
+		if(cssViewer.haveEventListenersCommit) {
+			cssViewer.FreezeCommit();
+		}
+		else if(!cssViewer.haveEventListenersCommit) cssViewer.UnfreezeCommit();
 	}
 
 	// c: Show code css for selected element. 
 	// window.prompt should suffice for now.
 	if (e.keyCode === 67) {
-		res = window.prompt("Simple Css Definition :\n\nYou may copy the code below then hit escape to continue.", CSSViewer_element_cssDefinition);
-		if (res) {
-			var request = new XMLHttpRequest();
-			request.open("POST", "http://127.0.0.1:5000/addNote", true);
-			request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-			request.send({ "name": "arsh" });
+		window.prompt("Simple Css Definition :\n\nYou may copy the code below then hit escape to continue.", CSSViewer_element_cssDefinition);
+	}
+	//prompt commits
+	if(e.keyCode === 75){
+		if(cssViewer.IsEnabled()){
+			console.log('ifnot the ensable wala')
+			cssViewer.Disable();
+			cssViewer.EnableCommit();
+		}
+		else {
+			console.log('ifnot the disable wala')
+			cssViewer.DisableCommit();
+			cssViewer.Enable();
 		}
 	}
 }
