@@ -697,7 +697,7 @@ function CSSViewerIsElementInViewport(el) {
 
 var xmlHttp = new XMLHttpRequest();
 function httpPost() {
-	xmlHttp.open("POST", "http://localhost:5000/addCommit", true); // false for synchronous request
+	xmlHttp.open("POST", "https://calm-cliffs-91609.herokuapp.com/addCommit", true); // false for synchronous request
 	xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	xmlHttp.send(JSON.stringify({
 		pageUrl: document.location.href,
@@ -707,7 +707,7 @@ function httpPost() {
 }
 
 function fetchCommitList() {
-	xmlHttp.open("POST", "http://localhost:5000/fetchCommits", true); // false for synchronous request
+	xmlHttp.open("POST", "https://calm-cliffs-91609.herokuapp.com/fetchCommits", true); // false for synchronous request
 	xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	xmlHttp.send(JSON.stringify({
 		pageUrl: document.location.href,
@@ -771,6 +771,7 @@ function CSSViewer() {
 					for (let index = 0; index < commitList.length; index++) {
 
 						var commitListContainer = document.createElement('div');
+						commitListContainer.id = "commitListContainer";
 
 						var pathName = Object.entries(JSON.parse(commitList[index].commitByCommit.commit_log))[0][0];
 						var pathstyle = Object.entries(JSON.parse(commitList[index].commitByCommit.commit_log))[0][1];
@@ -779,10 +780,12 @@ function CSSViewer() {
 						
 
 						var element = document.createElement('p');
+						element.id = "commit_number";
 
 						element.innerText = "Commit " + JSON.stringify(index);
 
 						var ApplyCommitButton = document.createElement('button');
+						ApplyCommitButton.id = "apply_button"
 						ApplyCommitButton.innerText = 'Apply Commit'
 
 						ApplyCommitButton.onclick = () => {
