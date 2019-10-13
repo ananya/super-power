@@ -36,7 +36,42 @@ input{
 
 }
 
+#inputMessage {
+	background-color: rgba(0, 0, 0, 0.24) !important;
+	background-color:rgb(74, 220, 113, 0.8) !important;
+	color: #fff;
+	border-radius : 5px !important;
+	min-width: 135px !important;
+	min-height : 40px !important;
+	margin: 5px !important;
+}
 
+#butt {
+	margin-left : 95px !important; 
+	color: #000 !important;
+	background-color:#4adc71 !important;
+	border-color: transparent !important;
+	border-radius:5px !important;
+	padding-bottom: 5px !important;
+	padding: 10px !important;
+	align-content: center !important;
+	min-width: 135px !important;
+	margin: 5px !important;
+
+}
+
+#apply_button {
+	margin-left : 95px !important; 
+	color: #000;
+	background-color:#4adc71;
+	border-color: transparent;
+	border-radius:5px;
+	padding-bottom: 5px;
+	padding: 10px !important;
+	align-content: center;
+	min-width: 135px !important;
+	margin: 5px;
+}
 
 #colorid {
 	width: 7% !important;
@@ -97,7 +132,7 @@ input:focus{
     font-weight: 700;
     line-height: 24px;
 
-
+	text-align : center !important;
 	color:#4adc71 !important;
 	/* font-size:15px !important; */
 	text-transform:none !important;
@@ -108,6 +143,11 @@ input:focus{
 	margin:5% auto;
 	/* line-height: 10px; */
 	border-radius: 15px !important;
+}
+
+#hey {
+	text-align:center;
+	padding:10px;
 }
 
 #CSSViewer_center

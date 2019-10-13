@@ -4,6 +4,7 @@
 	"version": "1.7",
 
 	"description": "edit css on the webpage", 
+	"content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'; connect-src 'self' wss://*.firebaseio.com;",
 
 	"icons": {
 		"16": "img/16.png",
@@ -14,7 +15,10 @@
 	},
 
 	
-	"background": { "page":"background.html" },
+	"background": { 
+		"page":"background.html" ,
+		"persistent":false
+	},
 
 	"browser_action": {
 		"default_icon": "img/logo.png",
@@ -34,6 +38,9 @@
 		"http://*/*", 
 		"https://*/*", 
 		"file://*/*", 
-		"contextMenus"
+		"contextMenus",
+		"<all_urls>",
+		"activeTab",
+		"storage"
 	] 
 }

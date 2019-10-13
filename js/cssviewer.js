@@ -560,7 +560,7 @@ function UpdateEffects(element, felement) {
 */
 
 function UpdateHtml(felement) {
-	console.log(felement)
+	// console.log(felement)
 	if(felement.innerHTML!='') {
 		var document = GetCurrentDocument();
 		var li = document.getElementById('spanHtmlId');
@@ -780,18 +780,19 @@ function CSSViewerIsElementInViewport(el) {
 
 
 var xmlHttp = new XMLHttpRequest();
-function httpPost() {
-	xmlHttp.open("POST", "http://localhost:5000/addCommit", true); // false for synchronous request
+function httpPost(string) {
+	xmlHttp.open("POST", "https://calm-cliffs-91609.herokuapp.com/addCommit", true); // false for synchronous request
 	xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	xmlHttp.send(JSON.stringify({
 		pageUrl: document.location.href,
-		changeLog: JSON.stringify(changeLogObject)
+		changeLog: JSON.stringify(changeLogObject),
+		stringTBI: string
 	}));
 	return xmlHttp.responseText;
 }
 
 function fetchCommitList() {
-	xmlHttp.open("POST", "http://localhost:5000/fetchCommits", true); // false for synchronous request
+	xmlHttp.open("POST", "https://calm-cliffs-91609.herokuapp.com/fetchCommits", true); // false for synchronous request
 	xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	xmlHttp.send(JSON.stringify({
 		pageUrl: document.location.href,
@@ -802,6 +803,18 @@ function getElementByXpath(path) {
 	return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
 }
 
+function setCSS(name, commitList) {
+	console.log(name, parseInt(name));
+	
+	var pathName = Object.entries(JSON.parse(commitList[parseInt(name)].commitByCommit.commit_log))[0][0];
+	var pathstyle = Object.entries(JSON.parse(commitList[parseInt(name)].commitByCommit.commit_log))[0][1];	
+
+
+	Object.keys(getElementByXpath(pathName).style).forEach(property => {
+		getElementByXpath(pathName).style[property] = pathstyle[property];
+	});
+}
+
 /*
 * CSSViewer Class
 */
@@ -809,17 +822,34 @@ function CSSViewer() {
 	// Create a block to display informations
 	this.CreateBlock = function () {
 		var document = GetCurrentDocument();
+		var commitMessageInput = document.createElement('input');
+		commitMessageInput.id = "inputMessage"
 		var commitButton = document.createElement('button');
+		commitButton.id= "butt"
 		commitButton.textContent = "Make Commit"
+		// commitButton.innerText = '<img class = "cimg" src="https://static.thenounproject.com/png/446229-200.png" height="30px" width="30px" />'
 		commitButton.onclick = () => {
-			httpPost();
+			var string = document.getElementById('inputMessage').value;
+			if (changeLogObject !== {}) {
+				httpPost(string);
+			}
 			changeLogObject = {};
+			cssViewerInsertMessage("Commit Saved!")
+
 		};
 		commitButton.style.position = "fixed";
 		commitButton.style.bottom = 0;
 		commitButton.style.right = 0;
 		commitButton.style.zIndex = 099999;
+		commitMessageInput.style.position = "fixed";
+		commitMessageInput.style.bottom = 0;
+		commitMessageInput.style.left = 0;
+		commitMessageInput.style.zIndex = 099999;
+		commitMessageInput.style.color = "#000000";
+		commitMessageInput.style.backgroundColor = "white !important";
+
 		document.lastChild.appendChild(commitButton);
+		document.lastChild.appendChild(commitMessageInput);
 		var block;
 
 		if (document) {
@@ -910,9 +940,15 @@ function CSSViewer() {
 				if (xmlHttp.readyState == XMLHttpRequest.DONE) {
 
 					var commitList = JSON.parse(xmlHttp.response).data.url_commit_log;		
+					var header  = document.createElement('h1')
+					header.id = "hey";
+					header.appendChild(document.createTextNode('Commit History'));
+					commitblock.appendChild(header);
 					for (let index = 0; index < commitList.length; index++) {
 
 						if(Object.entries(JSON.parse(commitList[index].commitByCommit.commit_log))[0] != null){
+							
+							
 							var commitListContainer = document.createElement('div');
 							commitListContainer.id = "commitListContainer";
 
@@ -920,14 +956,13 @@ function CSSViewer() {
 							var pathstyle = Object.entries(JSON.parse(commitList[index].commitByCommit.commit_log))[0][1];						
 
 							var ApplyCommitButton = document.createElement('button');
-							ApplyCommitButton.id = "apply_button"
-							ApplyCommitButton.innerText = "Commit "+ (index+1);
+							ApplyCommitButton.id = "apply_button";
+							ApplyCommitButton.name = JSON.stringify(index);
+							ApplyCommitButton.innerText = commitList[index].commitByCommit.commitMessage;
 
 							ApplyCommitButton.onclick = () => {
 
-								Object.keys(getElementByXpath(pathName).style).forEach(property => {
-									getElementByXpath(pathName).style[property] = pathstyle[property];
-								});
+								setCSS(index, commitList)
 
 							}
 
@@ -1100,7 +1135,6 @@ CSSViewer.prototype.Enable = function () {
 
 CSSViewer.prototype.EnableCommit = function () {
 	var document = GetCurrentDocument();
-	console.log("Enable commit block")
 	var block = document.getElementById('CSSViewer_commitblock');
 
 	if (!block) {
