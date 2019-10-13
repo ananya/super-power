@@ -559,6 +559,25 @@ function UpdateEffects(element, felement) {
 ** Event Handlers
 */
 
+function UpdateHtml(felement) {
+	console.log(felement)
+	if(felement.innerHTML!='') {
+		var document = GetCurrentDocument();
+		var li = document.getElementById('spanHtmlId');
+		li.value = felement.innerHTML;
+		// console.log(li.innerHTML);
+		
+		li.style.width = '94%'
+		// var lib = document.getElementById('');
+		li.oninput = function (e) {
+			var updatedInput = document.getElementById('spanHtmlId');
+			felement.innerText = updatedInput.value;
+			var XPath = getPathTo(felement);
+			changeLogObject[XPath] = felement.innerHTML;
+		};
+	}
+}
+
 function CSSViewerMouseOver(e) {
 	// Block
 	var document = GetCurrentDocument();
@@ -587,6 +606,8 @@ function CSSViewerMouseOver(e) {
 	UpdateList(element, this.tagName, this);
 	UpdateMisc(element, this);
 	UpdateEffects(element, this);
+	UpdateHtml(this);
+
 
 	CSSViewer_element = this;
 
@@ -817,6 +838,10 @@ function CSSViewer() {
 			var center = document.createElement('div');
 
 			center.id = 'CSSViewer_center';
+
+			spanHtml = document.createElement('input')
+			spanHtml.id = 'spanHtmlId'
+			block.appendChild(spanHtml)
 
 			for (var cat in CSSViewer_categories) {
 				var div = document.createElement('div');
